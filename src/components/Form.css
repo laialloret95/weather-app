@@ -1,0 +1,40 @@
+.container-form {
+    margin-top: 3rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.row-form {
+    margin: 0;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+.input {
+    flex-basis: 80%
+}
+
+.button {
+    padding: 0.5rem;
+}
+
+.btn {
+    font-size: 1rem !important;
+    line-height: normal !important;
+}
+
+.form input[name="city"] {
+    background-color: transparent;
+    color: white;
+    border:0;
+    border-bottom: 2px solid whitesmoke;
+    border-radius: 0;
+}
+
+.form input:focus {
+    background-color: transparent;
+    box-shadow: none !important;
+    color: white;
+}
