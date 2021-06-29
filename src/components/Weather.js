@@ -18,6 +18,11 @@ const Weather = (props) => {
                 {minmaxTemp(props.temp_min,props.temp_max)}
 
                 <h4 className="py-2">{props.description}</h4>
+
+                {props.temp_celsius ? (
+                    <button onClick={() => props.fav(props.city, props.weather_icon, props.temp_celsius)}>Add to Favourites</button>
+                ) : null }
+                
             </div>
         </div>
     )

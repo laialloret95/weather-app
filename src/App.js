@@ -20,7 +20,8 @@ class App extends Component {
       temp_min: undefined,
       description: "",
       error: false,
-      cityFound:true
+      cityFound:true,
+      favourites: []
     }
 
     this.weatherIcon = {
@@ -70,6 +71,15 @@ class App extends Component {
     }
   }
 
+  addToFav = (city, weatherIcon, temp) => {
+    const newFav = this.state.favourites
+
+    newFav.push({city:city, weatherIcon: weatherIcon, temp: temp})
+    this.setState({
+      favourites: newFav
+    })
+  }
+
   handleError = () => {
     return (
         <div className="alert alert-danger mx-5" role="alert">
@@ -83,8 +93,6 @@ class App extends Component {
       const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`);
 
       const response = await api_call.json();
-  
-      console.log(response)
   
       if(response.cod === "404") {
         this.setState({cityFound:false})
@@ -110,17 +118,43 @@ class App extends Component {
     }
   }
 
+  favourites = () => {
+    if (this.state.favourites.length > 0) {
+      return (<h2>Favourites</h2>)
+    }
+  }
+
 
   render() {
-    const {city, country, temp_celsius, temp_max, temp_min, description, weather_icon, cityFound}  = this.state
+    const {favourites, city, country, temp_celsius, temp_max, temp_min, description, weather_icon, cityFound}  = this.state
 
     return(
-      <div className="App">
+      <div className="app">
           {!cityFound ? (
             this.handleError()
         ): null }
         <Form loadWeather={this.getWeather} error={this.state.error} />
-        <Weather city={city} country={country} temp_celsius={temp_celsius} temp_max={temp_max} temp_min={temp_min} description={description} weather_icon={weather_icon}/>
+        <div className="content">
+          <div className="left-column">
+            <Weather city={city} country={country} temp_celsius={temp_celsius} temp_max={temp_max} temp_min={temp_min} description={description} weather_icon={weather_icon} fav={this.addToFav}/>
+          </div>
+          
+          <div className="right-column">
+              {this.favourites()}
+              {favourites.map((fav,index) => {
+
+                return (
+                  <div className="city" key={index}>
+                    <i className={`wi ${fav.weatherIcon} display-1`} />
+                    <h2>{fav.city}</h2>
+                    <h2>{fav.temp}&deg;</h2>
+                  </div>
+                )
+              })}
+          </div>
+        </div>
+    
+
       </div>
     )
   }

@@ -27,18 +27,16 @@ class Form extends Component {
     render() {
         const {city} = this.state
         return(
-            <div className="container-form">
-            <div>
-                {this.props.error ? this.handleError() : null}
-            </div>
+            <div className="form-container">
+                <div>
+                    {this.props.error ? this.handleError() : null}
+                </div>
                 <div className="form">
-                    <div className="row-form">
-                        <div className="col-md-2 input">
-                            <input type="text" className="form-control" name="city" value={city} autoComplete="off" placeholder="City" onChange={this.handleChange}/>
-                        </div>
-                        <div className="col-md-2 button">
-                            <button className="btn btn-warning" onClick={() => this.props.loadWeather(city)} >Get Weather</button>
-                        </div>
+                    <div className="text">
+                        <input type="text" className="form-control" name="city" value={city} autoComplete="off" placeholder="City" onChange={this.handleChange}/>
+                    </div>
+                    <div className="button">
+                        <button className="btn btn-warning" onClick={() => this.props.loadWeather(city)} >Get Weather</button>
                     </div>
                 </div>
             </div>
