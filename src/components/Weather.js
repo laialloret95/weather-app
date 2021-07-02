@@ -1,41 +1,43 @@
-import React from 'react';
+import React, {Component} from 'react';
 
-const Weather = (props) => {
-    return (
-        <div className="container">
-            <div className="cards pt-4">
-                <h1>{props.city}</h1>
-                <h5 className="py-4"> 
-                    <i className={`wi ${props.weather_icon} display-1`} />
-                </h5>
-                
-                {props.temp_celsius ? (
-                    <h1 className="py-2">{props.temp_celsius}&deg;</h1>
-                ) : null }
-
-                {/** show max and min temp */}
-
-                {minmaxTemp(props.temp_min,props.temp_max)}
-
-                <h4 className="py-2">{props.description}</h4>
-
-                {props.temp_celsius ? (
-                    <button onClick={() => props.fav(props.city, props.weather_icon, props.temp_celsius)}>Add to Favourites</button>
-                ) : null }
-                
-            </div>
-        </div>
-    )
-}
-
-function minmaxTemp(min, max) {
-    if(min && max) {
+class Weather extends Component {
+     minmaxTemp = (min, max) => {
+        if(min && max) {
+            return (
+                <h3 className="text-center text-gray-500 mt-2 text-sm">
+                    <span className="px-4">{min}&deg;</span>
+                    <span className="px-4">{max}&deg;</span>
+                </h3>
+                )
+            }
+        }
+    render() {
+        const props = this.props
         return (
-            <h3>
-                <span className="px-4">{min}&deg;</span>
-                <span className="px-4">{max}&deg;</span>
-            </h3>
-            )
+            <>
+            {props.city ? (
+                <div className="bg-white p-8 bg-opacity-80 rounded-3xl flex flex-col justify-evenly items-center shadow-md ">
+                    <h1 className="text-center text-gray-500 mb-6 text-xl">{props.city}</h1>
+                    <div className="flex flex-col items-center justify-between mb-2">
+                        <i className={`wi ${props.weather_icon} text-black text-5xl`}/>
+                        <h4 className="text-center text-gray-500 mt-2 text-sm">{props.description}</h4>
+                    </div>
+    
+                    <div className="flex flex-col justify-between items-center">
+                        {props.temp_celsius ? (
+                            <h1 className="text-5xl font-bold text-right text-gray-900">{props.temp_celsius}&deg;</h1>
+                        ) : null }
+                        {this.minmaxTemp(props.temp_min,props.temp_max)}
+                    </div>
+    
+                    <button className="mt-2" onClick={() => props.fav(props.city, props.weather_icon, props.temp_celsius, props.temp_min,props.temp_max, props.description)}>
+                        <i className="fas fa-heart text-red-600"></i>
+                    </button>
+                    
+                </div>
+            ): null }
+            </>
+        )
     }
 
 }

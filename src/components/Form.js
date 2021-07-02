@@ -27,16 +27,16 @@ class Form extends Component {
     render() {
         const {city} = this.state
         return(
-            <div className="form-container">
+            <div className="flex flex-column">
                 <div>
                     {this.props.error ? this.handleError() : null}
                 </div>
-                <div className="form">
+                <div className="flex flex-row justify-center items-center">
                     <div className="text">
-                        <input type="text" className="form-control" name="city" value={city} autoComplete="off" placeholder="City" onChange={this.handleChange}/>
+                        <input type="text" className="w-full rounded py-2 px-4" name="city" value={city} autoComplete="off" placeholder="City" onChange={this.handleChange}/>
                     </div>
-                    <div className="button">
-                        <button className="btn btn-warning" onClick={() => this.props.loadWeather(city)} >Get Weather</button>
+                    <div className="mx-2">
+                        <button className="bg-white p-8 bg-opacity-80 hover:bg-white-700 text-black py-2 px-4 rounded self-end" onClick={() => this.props.loadWeather(city)} >Get Weather</button>
                     </div>
                 </div>
             </div>

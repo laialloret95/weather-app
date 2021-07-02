@@ -1,7 +1,7 @@
-import './App.css';
 import Weather from './components/Weather';
 import Form from './components/Form';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Favourites from './components/Favourites';
+
 import 'weather-icons/css/weather-icons.css';
 import React, { Component} from 'react';
 
@@ -21,7 +21,8 @@ class App extends Component {
       description: "",
       error: false,
       cityFound:true,
-      favourites: []
+      favourites: [],
+      showFav: false,
     }
 
     this.weatherIcon = {
@@ -40,7 +41,7 @@ class App extends Component {
     return cell;
   }
 
-  getWeatherIcon = (icons, rangeID) => {
+  getWeatherIcon = (rangeID) => {
     switch(true) {
       case rangeID >= 200 && rangeID <= 232:
         this.setState({weather_icon: this.weatherIcon.Thunderstorm})
@@ -71,20 +72,13 @@ class App extends Component {
     }
   }
 
-  addToFav = (city, weatherIcon, temp) => {
-    const newFav = this.state.favourites
-
-    newFav.push({city:city, weatherIcon: weatherIcon, temp: temp})
-    this.setState({
-      favourites: newFav
-    })
-  }
-
   handleError = () => {
     return (
-        <div className="alert alert-danger mx-5" role="alert">
-            City Not Found
+      <div role="alert">
+        <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+          <p>City not found, try another one</p>
         </div>
+      </div>
     )
 }
   getWeather = async (city) => {
@@ -97,6 +91,7 @@ class App extends Component {
       if(response.cod === "404") {
         this.setState({cityFound:false})
       } else {
+        console.log(response)
         this.setState({
           cityFound:true,
           city: `${response.name}, ${response.sys.country}`,
@@ -108,7 +103,8 @@ class App extends Component {
           error:false
         })
     
-        this.getWeatherIcon(this.weatherIcon, response.weather[0].id)
+        this.getWeatherIcon(response.weather[0].id)
+        console.log(this.state.weather_icon)
       }
     } else {
       this.setState({
@@ -118,47 +114,58 @@ class App extends Component {
     }
   }
 
-  favourites = () => {
-    if (this.state.favourites.length > 0) {
-      return (<h2>Favourites</h2>)
+  addToFav = (city,weather_icon,temp_celsius, temp_max, temp_min, description) => {
+    const newFav = this.state.favourites
+    newFav.push({city:city, weather_icon: weather_icon, temp_celsius:temp_celsius, description:description, temp_min:temp_min, temp_max:temp_max})
+
+    this.setState({
+      favourites: newFav
+    })
+  }
+
+  showFav = () => {
+      this.setState({
+        showFav: !this.state.showFav
+      })
+  }
+
+  handleContent = () => {
+    const {showFav, city, country, temp_celsius, temp_max, temp_min, description, weather_icon, cityFound}  = this.state
+    
+    if (showFav) {
+      return (
+        <Favourites favourites={this.state.favourites} showFav={this.showFav}/>
+      )
+    } 
+    else {
+      return (
+        <div className="flex flex-col items-center">
+          {!cityFound ? this.handleError() : null }
+          <button className="bg-white p-8 bg-opacity-80 hover:bg-white-700 text-black py-2 px-4 rounded self-end m-8" onClick={this.showFav}>Go To Favourites</button>
+          <Form loadWeather={this.getWeather} error={this.state.error} />
+          <div className="flex flex-col justify-center items-center text-white mt-8">
+              <Weather city={city} country={country} temp_celsius={temp_celsius} temp_max={temp_max} temp_min={temp_min} description={description} weather_icon={weather_icon} fav={this.addToFav}/>
+          </div>
+        </div>
+      )
     }
   }
 
+  handleFav = () => {
+    let result = this.state.favourites.find(fav => fav.city === this.state.city)
+    console.log(result)
+  }
 
   render() {
-    const {favourites, city, country, temp_celsius, temp_max, temp_min, description, weather_icon, cityFound}  = this.state
+   
 
     return(
-      <div className="app">
-          {!cityFound ? (
-            this.handleError()
-        ): null }
-        <Form loadWeather={this.getWeather} error={this.state.error} />
-        <div className="content">
-          <div className="left-column">
-            <Weather city={city} country={country} temp_celsius={temp_celsius} temp_max={temp_max} temp_min={temp_min} description={description} weather_icon={weather_icon} fav={this.addToFav}/>
-          </div>
-          
-          <div className="right-column">
-              {this.favourites()}
-              {favourites.map((fav,index) => {
-
-                return (
-                  <div className="city" key={index}>
-                    <i className={`wi ${fav.weatherIcon} display-1`} />
-                    <h2>{fav.city}</h2>
-                    <h2>{fav.temp}&deg;</h2>
-                  </div>
-                )
-              })}
-          </div>
-        </div>
-    
-
+      <div className="bg-gradient-to-br from-yellow-400 to-pink-500 via-red-400 w-full h-screen">
+        {this.handleFav()}
+        {this.handleContent()}
       </div>
     )
   }
 }
-
 
 export default App;
